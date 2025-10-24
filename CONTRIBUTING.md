@@ -186,6 +186,7 @@ Oh no! No cookies for the maintainers today! Please [tell us](https://github.com
 ### I’ve found a bug in this documentation.
 
 No beer in the bar for us unless it's fixed. [Let us know](https://github.com/JetBrains/ideavim#contact-maintainers) situation so we might be able to fix it.
+Ya it's so anoying 
 
 
 ### The lack of documentation or a javadoc/ktdoc makes it difficult to start contributing.
