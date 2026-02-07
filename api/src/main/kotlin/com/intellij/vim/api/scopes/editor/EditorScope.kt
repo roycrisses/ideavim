@@ -37,11 +37,7 @@ abstract class EditorScope {
    * @param block A suspending lambda with [EditorAccessor] receiver that contains the read operations to perform
    * @return A [kotlinx.coroutines.Deferred] that completes with the result of the block execution
    */
-  @OptIn(ExperimentalContracts::class)
   fun <T> read(block: ReadScope.() -> T): T {
-    contract {
-      callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
     return this.ideRead(block)
   }
 
@@ -69,11 +65,7 @@ abstract class EditorScope {
    * @param block A suspending lambda with [Transaction] receiver that contains the write operations to perform
    * @return A [kotlinx.coroutines.Job] that completes when all write operations are finished
    */
-  @OptIn(ExperimentalContracts::class)
   fun change(block: Transaction.() -> Unit) {
-    contract {
-      callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
     return ideChange(block)
   }
 

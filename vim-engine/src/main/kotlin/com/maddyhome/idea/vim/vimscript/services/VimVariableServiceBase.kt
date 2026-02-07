@@ -375,7 +375,10 @@ abstract class VimVariableServiceBase : VariableService {
       }
 
       else -> throw IllegalArgumentException("Unsupported type: ${clazz.simpleName}")
-    } as T
+    }.let {
+      @Suppress("UNCHECKED_CAST")
+      it as T
+    }
   }
 
   override fun clear() {

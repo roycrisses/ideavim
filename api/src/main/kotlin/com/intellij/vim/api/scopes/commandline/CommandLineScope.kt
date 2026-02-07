@@ -43,11 +43,7 @@ abstract class CommandLineScope {
    * @param block A function with CommandLineRead receiver that contains the read operations to perform.
    * @return A Deferred that will complete with the result of the block execution.
    */
-  @OptIn(ExperimentalContracts::class)
   fun <T> read(block: CommandLineRead.() -> T): T {
-    contract {
-      callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
     return this.ideRead(block)
   }
 
@@ -67,11 +63,7 @@ abstract class CommandLineScope {
    * @param block A function with CommandLineTransaction receiver that contains the write operations to perform.
    * @return A Job that represents the ongoing execution of the block.
    */
-  @OptIn(ExperimentalContracts::class)
   fun change(block: CommandLineTransaction.() -> Unit) {
-    contract {
-      callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
     ideChange(block)
   }
 

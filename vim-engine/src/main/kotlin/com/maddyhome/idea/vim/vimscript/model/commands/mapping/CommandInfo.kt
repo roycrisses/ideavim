@@ -12,7 +12,7 @@ import com.maddyhome.idea.vim.command.MappingMode
 import org.jetbrains.annotations.NonNls
 
 internal class CommandInfo(
-  @NonNls val prefix: String,
+  @param:NonNls val prefix: String,
   @NonNls suffix: String,
   val mappingModes: Set<MappingMode>,
   val isRecursive: Boolean,

@@ -199,9 +199,9 @@ class CharPointer {
     return seq[pointer + 7]
   }
 
-  override fun equals(obj: Any?): Boolean {
-    if (obj is CharPointer) {
-      val ptr = obj
+  override fun equals(other: Any?): Boolean {
+    if (other is CharPointer) {
+      val ptr = other
       return ptr.seq === seq && ptr.pointer == pointer
     }
     return false

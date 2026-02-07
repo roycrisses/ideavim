@@ -46,10 +46,10 @@ abstract class VimPutBase : VimPut {
     context: ExecutionContext,
     data: PutData,
     updateVisualMarks: Boolean,
-    saveToRegister: Boolean,
+    modifyRegister: Boolean,
   ): Boolean {
     val additionalData = collectPreModificationData(editor, data)
-    deleteSelectedText(editor, context, data, saveToRegister)
+    deleteSelectedText(editor, context, data, modifyRegister)
     val processedText = processText(null, data) ?: return false
     putTextAndSetCaretPosition(editor, context, processedText, data, additionalData)
 

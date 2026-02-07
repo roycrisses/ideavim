@@ -60,6 +60,7 @@ object OptionScopeImpl: OptionScope {
       }
     }
 
+    @Suppress("UNCHECKED_CAST")
     return kotlinValue as T
   }
 
