@@ -29,7 +29,7 @@ interface CommandProvider {
   @OptIn(ExperimentalSerializationApi::class)
   fun getCommands(): Collection<LazyVimCommand> {
     val classLoader = this.javaClass.classLoader
-    val commands: List<CommandBean> = Json.decodeFromStream(getFile())
+    val commands: List<CommandBean> = getFile().use { Json.decodeFromStream(it) }
     return commands
       .groupBy { it.`class` }
       .map {
