@@ -108,7 +108,7 @@ class IjJsonExtensionProvider : JsonExtensionProvider {
       logger.error("Failed to fetch extensions from $bundledExtensionsFile")
       return emptyList()
     }
-    val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(resourceStream)
+    val bundledExtensions: List<KspExtensionBean> = resourceStream.use { Json.decodeFromStream(it) }
     return bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
   }
 
@@ -185,17 +185,17 @@ class IjJsonExtensionProvider : JsonExtensionProvider {
     if (resourceStream == null) {
       // even if a file with bundled extensions does not exist, create a config file
       val extensions: List<ExtensionBean> = emptyList()
-      Json.encodeToStream(extensions, targetFile.outputStream())
+      targetFile.outputStream().use { Json.encodeToStream(extensions, it) }
 
       // throw exception/log
       logger.error("Failed to fetch extensions from $bundledExtensionsFile")
       return
     }
 
-    val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(resourceStream)
+    val bundledExtensions: List<KspExtensionBean> = resourceStream.use { Json.decodeFromStream(it) }
     val extensions: List<ExtensionBean> = bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
 
-    Json.encodeToStream(extensions, targetFile.outputStream())
+    targetFile.outputStream().use { Json.encodeToStream(extensions, it) }
   }
 
   /**
