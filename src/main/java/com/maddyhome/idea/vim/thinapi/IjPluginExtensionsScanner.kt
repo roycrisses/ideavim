@@ -38,7 +38,7 @@ class IjPluginExtensionsScanner {
       val inputStream: InputStream? = classLoader?.getResourceAsStream("META-INF/extensions.json")
       val pluginId = pluginDescriptor.pluginId.idString
       if (inputStream != null) {
-        val extensionBeans: List<KspExtensionBean> = Json.decodeFromStream(inputStream)
+        val extensionBeans: List<KspExtensionBean> = inputStream.use { Json.decodeFromStream(it) }
         logger.debug(
           "Plugin ${pluginId}: Extensions: ${extensionBeans.joinToString(", ") { it.extensionName }}."
         )
