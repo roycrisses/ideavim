@@ -1,0 +1,4 @@
+## 2026-04-20 - Resource Leaks and Info Leakage in Serialization
+**Vulnerability:** Use of `Json.decodeFromStream` and `Json.encodeToStream` without wrapping the underlying `InputStream` or `OutputStream` in `.use` blocks, leading to resource leaks. Use of `printStackTrace()` in catch blocks leading to sensitive info leakage.
+**Learning:** `kotlinx.serialization` stream-based functions do not automatically close the underlying streams. Additionally, `printStackTrace()` bypasses the configured logging system and may expose stack traces in environments where they shouldn't be visible.
+**Prevention:** Always wrap streams in `.use` blocks when passing them to serialization functions. Use the project's `VimLogger` via the `vimLogger<T>()` helper to report errors, ensuring that exceptions are logged with appropriate context and not leaked to standard output.

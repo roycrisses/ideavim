@@ -38,16 +38,18 @@ class IjPluginExtensionsScanner {
       val inputStream: InputStream? = classLoader?.getResourceAsStream("META-INF/extensions.json")
       val pluginId = pluginDescriptor.pluginId.idString
       if (inputStream != null) {
-        val extensionBeans: List<KspExtensionBean> = Json.decodeFromStream(inputStream)
+        val extensionBeans: List<KspExtensionBean> = inputStream.use {
+          Json.decodeFromStream(it)
+        }
         logger.debug(
-          "Plugin ${pluginId}: Extensions: ${extensionBeans.joinToString(", ") { it.extensionName }}."
+          "Plugin ${pluginId}: Extensions: ${extensionBeans.joinToString(", ") { bean -> bean.extensionName }}."
         )
         return extensionBeans.map { it.toExtensionBean(pluginId) }
       } else {
         logger.debug("Plugin ${pluginId}: META-INF/extensions.json not found in the plugin JAR.")
       }
     } catch (e: Exception) {
-      e.printStackTrace()
+      logger.error("Failed to scan plugin jar", e)
     }
     return null
   }
