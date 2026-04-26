@@ -1,0 +1,4 @@
+## 2025-05-15 - Resource leaks and information leakage in JSON providers
+**Vulnerability:** Multiple JSON providers in the codebase were using `Json.decodeFromStream` and `Json.encodeToStream` without closing the underlying `InputStream` or `OutputStream`. This could lead to file descriptor exhaustion. Some providers also used `e.printStackTrace()`, which can leak sensitive stack trace information.
+**Learning:** Unlike some other libraries, `kotlinx.serialization`'s stream-based methods do not automatically close the provided streams. This pattern was found across several modules (`vim-engine` and the main plugin module).
+**Prevention:** Always wrap streams in `.use { ... }` blocks when using `kotlinx.serialization`'s stream methods. Use `VimLogger`'s `error(message, throwable)` method instead of `printStackTrace()` to ensure secure and structured error reporting.
