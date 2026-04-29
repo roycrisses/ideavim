@@ -1,0 +1,4 @@
+## 2025-01-24 - Resource and Information Leakage in JSON Providers
+**Vulnerability:** Multiple `InputStream` and `OutputStream` instances were not being closed after use with `kotlinx.serialization`'s `decodeFromStream` and `encodeToStream`. Additionally, `e.printStackTrace()` was being used in one location, potentially leaking implementation details.
+**Learning:** `kotlinx.serialization` does not automatically close streams provided to it. In a long-running application like an IDE plugin, failing to close these can lead to resource exhaustion (DoS). Using `printStackTrace()` is also insecure as it bypasses the application's logging configuration and can expose sensitive stack information.
+**Prevention:** Always wrap `InputStream` and `OutputStream` in `.use { ... }` blocks when using them with `Json.decodeFromStream` or `Json.encodeToStream`. Use the project's `VimLogger` for all error reporting instead of `printStackTrace()`.
