@@ -19,7 +19,7 @@ interface VimscriptFunctionProvider {
   @OptIn(ExperimentalSerializationApi::class)
   fun getFunctions(): Collection<LazyVimscriptFunction> {
     val classLoader = this.javaClass.classLoader
-    val functionDict: Map<String, String> = Json.decodeFromStream(getFile())
+    val functionDict: Map<String, String> = getFile().use { Json.decodeFromStream(it) }
     return functionDict.map { LazyVimscriptFunction(it.key, it.value, classLoader) }
   }
 
