@@ -102,14 +102,11 @@ class IjJsonExtensionProvider : JsonExtensionProvider {
   @OptIn(ExperimentalSerializationApi::class)
   override fun getBundledExtensions(): List<ExtensionBean> {
     val bundledExtensionsFile = "ksp-generated/$EXTENSION_LIST_FILE_NAME"
-    val resourceStream: InputStream? =
-      this.javaClass.classLoader.getResourceAsStream(bundledExtensionsFile)
-    if (resourceStream == null) {
-      logger.error("Failed to fetch extensions from $bundledExtensionsFile")
-      return emptyList()
-    }
-    val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(resourceStream)
-    return bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
+    this.javaClass.classLoader.getResourceAsStream(bundledExtensionsFile)?.use { resourceStream ->
+      val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(resourceStream)
+      return bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
+    } ?: logger.error("Failed to fetch extensions from $bundledExtensionsFile")
+    return emptyList()
   }
 
   /**
@@ -185,17 +182,23 @@ class IjJsonExtensionProvider : JsonExtensionProvider {
     if (resourceStream == null) {
       // even if a file with bundled extensions does not exist, create a config file
       val extensions: List<ExtensionBean> = emptyList()
-      Json.encodeToStream(extensions, targetFile.outputStream())
+      targetFile.outputStream().use { outputStream ->
+        Json.encodeToStream(extensions, outputStream)
+      }
 
       // throw exception/log
       logger.error("Failed to fetch extensions from $bundledExtensionsFile")
       return
     }
 
-    val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(resourceStream)
-    val extensions: List<ExtensionBean> = bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
+    resourceStream.use { stream ->
+      val bundledExtensions: List<KspExtensionBean> = Json.decodeFromStream(stream)
+      val extensions: List<ExtensionBean> = bundledExtensions.map { it.toExtensionBean(IDEAVIM_ID) }
 
-    Json.encodeToStream(extensions, targetFile.outputStream())
+      targetFile.outputStream().use { outputStream ->
+        Json.encodeToStream(extensions, outputStream)
+      }
+    }
   }
 
   /**
