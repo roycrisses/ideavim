@@ -1,0 +1,4 @@
+## 2026-05-07 - Resource Leaks and Information Disclosure in JSON Provisioning
+**Vulnerability:** Input/Output streams used for JSON serialization and deserialization via `kotlinx.serialization` were not being closed, potentially leading to resource exhaustion. Additionally, `printStackTrace()` was used for error reporting, which can leak sensitive stack trace information.
+**Learning:** `Json.decodeFromStream` and `Json.encodeToStream` do not automatically close the underlying streams. Explicit resource management using `.use {}` is required. The project uses a custom `VimLogger` which should be preferred over `printStackTrace()` for secure error reporting.
+**Prevention:** Always wrap stream-based operations in `.use {}` blocks and use `logger.error("message", exception)` for reporting errors instead of printing stack traces directly.
