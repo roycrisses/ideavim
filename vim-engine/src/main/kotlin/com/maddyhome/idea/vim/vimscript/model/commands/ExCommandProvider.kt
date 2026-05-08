@@ -19,7 +19,7 @@ interface ExCommandProvider {
   @OptIn(ExperimentalSerializationApi::class)
   fun getCommands(): Map<String, LazyExCommandInstance> {
     val classLoader = this.javaClass.classLoader
-    val commandToClass: Map<String, String> = Json.decodeFromStream(getFile())
+    val commandToClass: Map<String, String> = getFile().use { Json.decodeFromStream(it) }
     return commandToClass.entries.associate { it.key to LazyExCommandInstance(it.value, classLoader) }
   }
 
