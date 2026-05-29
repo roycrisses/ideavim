@@ -49,6 +49,8 @@ object MacKeyRepeat {
 
   @Throws(IOException::class)
   private fun read(stream: InputStream): String {
-    return CharStreams.toString(InputStreamReader(stream))
+    return stream.use {
+      CharStreams.toString(InputStreamReader(it))
+    }
   }
 }
