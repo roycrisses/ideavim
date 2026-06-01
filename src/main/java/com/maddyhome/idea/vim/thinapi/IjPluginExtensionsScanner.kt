@@ -34,20 +34,17 @@ class IjPluginExtensionsScanner {
   @OptIn(ExperimentalSerializationApi::class)
   fun scanPluginJar(pluginDescriptor: IdeaPluginDescriptor): List<ExtensionBean>? {
     val classLoader = pluginDescriptor.pluginClassLoader
+    val pluginId = pluginDescriptor.pluginId.idString
     try {
-      val inputStream: InputStream? = classLoader?.getResourceAsStream("META-INF/extensions.json")
-      val pluginId = pluginDescriptor.pluginId.idString
-      if (inputStream != null) {
+      classLoader?.getResourceAsStream("META-INF/extensions.json")?.use { inputStream ->
         val extensionBeans: List<KspExtensionBean> = Json.decodeFromStream(inputStream)
         logger.debug(
-          "Plugin ${pluginId}: Extensions: ${extensionBeans.joinToString(", ") { it.extensionName }}."
+          "Plugin $pluginId: Extensions: ${extensionBeans.joinToString(", ") { it.extensionName }}."
         )
         return extensionBeans.map { it.toExtensionBean(pluginId) }
-      } else {
-        logger.debug("Plugin ${pluginId}: META-INF/extensions.json not found in the plugin JAR.")
-      }
+      } ?: logger.debug("Plugin $pluginId: META-INF/extensions.json not found in the plugin JAR.")
     } catch (e: Exception) {
-      e.printStackTrace()
+      logger.error("Failed to scan plugin JAR for $pluginId", e)
     }
     return null
   }
